@@ -24,7 +24,7 @@ async def start_handler(bot: Client, message: Message):
   await message.reply("Hey!")
 
 @bot.on_message(filters.private)
-async def wait_for_response_handler(bot: Client, message: Message):
+async def new_message_handler(bot: Client, message: Message):
   pass
 
 if __name__ == "__main__":

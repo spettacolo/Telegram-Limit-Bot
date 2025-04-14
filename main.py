@@ -1,5 +1,6 @@
 from pyrogram import Client, filters, compose, enums, types
 from pyrogram.types import Message, User, InlineKeyboardMarkup, InlineKeyboardButton, CallbackQuery
+from pyrogram.errors import BadRequest
 from dotenv import load_dotenv
 import asyncio, time, os
 
@@ -20,6 +21,24 @@ async def is_admin_filter(_, __, message: Message):
 
 is_admin = filters.create(is_admin_filter)
 
+@bot.on_callback_query(filters.regex(r"view_profile_(\d+)"))
+async def view_profile_handler(bot: Client, callback_query: CallbackQuery):
+  user_id = int(callback_query.data.split("_")[2])
+  user = await bot.get_users(user_id)
+
+  profile_details = f"User ID: {user.id}\nFirst Name: {user.first_name}" #Username: @{user.username}\nFirst Name: {user.first_name}\nLast Name: {user.last_name}"
+  if user.last_name:
+    profile_details += f"\nLast Name: {user.last_name}"
+  if user.username:
+    profile_details += f"\nUsername: @{user.username}"
+  if user.raw.photo:
+    photo_binary = await bot.download_media(user.photo.big_file_id, in_memory=True)
+    await callback_query.message.reply_photo(photo=photo_binary, caption=profile_details)
+  else:
+    await callback_query.message.reply(text=profile_details)
+    
+  await callback_query.answer()
+
 @bot.on_message(filters.private & filters.command(["start", "help"]))
 async def start_handler(bot: Client, message: Message):
   global bot_data
@@ -31,7 +50,7 @@ async def new_message_handler(bot: Client, message: Message):
   global bot_data
   reply_markup = InlineKeyboardMarkup(
     [
-      [InlineKeyboardButton("View Profile", user_id=message.from_user.id)], #pyrogram.errors.exceptions.bad_request_400.ButtonUserPrivacyRestricted: Telegram says: [400 BUTTON_USER_PRIVACY_RESTRICTED] - The privacy settings of the user specified in a keyboard button do not allow creating such button (caused by "messages.SendMessage")
+      [InlineKeyboardButton("View Profile", callback_data=f"view_profile_{message.from_user.id}")],
       #[InlineKeyboardButton("Send Message", callback_data=f"send_message_{message.from_user.id}")],
       [InlineKeyboardButton("Reply", url=f"t.me/{bot_data.username}?start={message.from_user.id},{message.id}")],
     ]

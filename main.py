@@ -35,7 +35,7 @@ async def new_message_handler(bot: Client, message: Message):
     ]
   )
 
-  await bot.send_message(owner, f"New message from {message.from_user.first_name}:\n\n{message.text}", reply_markup=reply_markup)
+  await message.copy(chat_id=owner, reply_markup=reply_markup)
   await message.reply("Message sent to owner.")
 
 async def setup():

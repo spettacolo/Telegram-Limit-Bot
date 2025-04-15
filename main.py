@@ -4,6 +4,7 @@ from pyrogram.errors import BadRequest
 from dotenv import load_dotenv
 import asyncio, time, os
 
+# test
 load_dotenv()
 
 api_id = os.getenv("API_ID")
@@ -36,7 +37,7 @@ async def view_profile_handler(bot: Client, callback_query: CallbackQuery):
     await callback_query.message.reply_photo(photo=photo_binary, caption=profile_details)
   else:
     await callback_query.message.reply(text=profile_details)
-    
+
   await callback_query.answer()
 
 @bot.on_message(filters.private & filters.command(["start", "help"]))

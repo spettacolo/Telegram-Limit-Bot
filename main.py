@@ -4,7 +4,6 @@ from pyrogram.errors import BadRequest
 from dotenv import load_dotenv
 import asyncio, time, os
 
-# test
 load_dotenv()
 
 api_id = os.getenv("API_ID")

@@ -42,6 +42,7 @@ async def view_profile_handler(bot: Client, callback_query: CallbackQuery):
 @bot.on_message(filters.private & filters.command(["start", "help"]))
 async def start_handler(bot: Client, message: Message):
   global bot_data
+  # print(message)
   bot_data = await bot.get_me()
   await message.reply("Hey!")
 
